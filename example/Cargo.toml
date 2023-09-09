@@ -1,0 +1,14 @@
+[package]
+name = "example"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio = { version = "1.21.2" ,features = ["full"]}
+edge-tts-rs = {path = "../edge-tts-rs"}
+[[example]]
+name = "hello_world"
+path = "hello_world.rs"
