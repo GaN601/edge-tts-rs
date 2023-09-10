@@ -12,3 +12,6 @@ edge-tts-rs = {path = "../edge-tts-rs"}
 [[example]]
 name = "hello_world"
 path = "hello_world.rs"
+[[example]]
+path="send_custom_ssml.rs"
+name="send_custom_ssml"

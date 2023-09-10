@@ -23,7 +23,8 @@ pub struct EdgeTTS {
     headers: Headers,
 }
 
-#[derive(Debug)]
+const PATH_AUDIO: &[u8] = "Path:audio\r\n".as_bytes();
+
 pub struct EdgeTTSConfig {
     /// refer to SuggestedCodec in https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4
     // todo check the output format
@@ -32,8 +33,9 @@ pub struct EdgeTTSConfig {
     /// refer to rate in https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/speech-synthesis-markup-voice#adjust-prosody
     pub rate: f32,
     pub pitch: f32,
+    /// search "Path:audio\r\n" bytes in input, return index
+    binary_context_slice_match: fn(&Vec<u8>) -> usize,
 }
-
 impl Default for EdgeTTSConfig {
     fn default() -> Self {
         Self {
@@ -41,6 +43,13 @@ impl Default for EdgeTTSConfig {
             voice_name: String::from("zh-CN-XiaoxiaoNeural"),
             rate: 0.0,
             pitch: 0.0,
+            binary_context_slice_match: |vec| match vec
+                .windows(PATH_AUDIO.len())
+                .position(|window| window == PATH_AUDIO)
+            {
+                None => 0,
+                Some(x) => x + PATH_AUDIO.len(),
+            },
         }
     }
 }
@@ -162,7 +171,10 @@ impl EdgeTTS {
                     }
                 }
                 OwnedMessage::Binary(mut resp) => {
+                    println!("{:?}", resp);
                     if flag {
+                        let x = (self.config.binary_context_slice_match)(&resp);
+                        let mut resp = resp[x..].to_vec();
                         voice_binary.append(&mut resp);
                     }
                 }
