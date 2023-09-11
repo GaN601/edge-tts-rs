@@ -26,13 +26,21 @@ pub struct EdgeTTS {
 const PATH_AUDIO: &[u8] = "Path:audio\r\n".as_bytes();
 
 pub struct EdgeTTSConfig {
-    /// refer to SuggestedCodec in https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4
+    /// # refer
+    /// https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4
     // todo check the output format
     pub output_format: String,
     pub voice_name: String,
-    /// refer to rate in https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/speech-synthesis-markup-voice#adjust-prosody
-    pub rate: i8,
-    pub pitch: i8,
+    /// Indicates the speaking rate of the text. Speaking rate can be applied at the word or sentence level. The rate changes should be within 0.5 to 2 times the original audio.
+    /// # refer
+    /// https://learn.microsoft.com/en-su/azure/ai-services/speech-service/speech-synthesis-markup-voice#adjust-prosody
+    /// # scale
+    /// -1 is -1%
+    pub rate: i16,
+    /// Indicates the baseline pitch for the text. Pitch changes can be applied at the sentence level. The pitch changes should be within 0.5 to 1.5 times the original audio.
+    /// # scale
+    /// -1 is -1%
+    pub pitch: i16,
     /// search "Path:audio\r\n" bytes in input, return index
     binary_context_slice_match: fn(&Vec<u8>) -> usize,
 }
