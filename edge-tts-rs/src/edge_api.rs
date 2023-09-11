@@ -157,7 +157,7 @@ impl EdgeTTS {
     ) -> Result<Vec<u8>, Box<dyn Error>> {
         println!("ssml prepared: {}", ssml);
 
-        let message = Message::text(format!("X-Timestamp:{}\r\nX-RequestId:{}\r\nContent-Type:application/ssml+xml\r\nPath:ssml\r\n\r\n{}",now_millis(),self.request_id,ssml));
+        let message = Message::text(format!("X-Timestamp:{}\r\nX-RequestId:{}\r\nContent-Type:application/ssml+xml\r\nPath:ssml\r\n\r\n{}",now_millis(),gen_request_id(),ssml));
         client.send_message(&message)?;
 
         let mut voice_binary: Vec<u8> = Vec::with_capacity(1024);
@@ -178,7 +178,7 @@ impl EdgeTTS {
                         break 'l;
                     }
                 }
-                OwnedMessage::Binary(mut resp) => {
+                OwnedMessage::Binary(resp) => {
                     println!("{:?}", resp);
                     if flag {
                         let x = (self.config.binary_context_slice_match)(&resp);
