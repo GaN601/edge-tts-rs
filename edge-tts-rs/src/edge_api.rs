@@ -31,8 +31,8 @@ pub struct EdgeTTSConfig {
     pub output_format: String,
     pub voice_name: String,
     /// refer to rate in https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/speech-synthesis-markup-voice#adjust-prosody
-    pub rate: f32,
-    pub pitch: f32,
+    pub rate: i8,
+    pub pitch: i8,
     /// search "Path:audio\r\n" bytes in input, return index
     binary_context_slice_match: fn(&Vec<u8>) -> usize,
 }
@@ -41,8 +41,8 @@ impl Default for EdgeTTSConfig {
         Self {
             output_format: String::from("audio-24khz-96kbitrate-mono-mp3"),
             voice_name: String::from("zh-CN-XiaoxiaoNeural"),
-            rate: 0.0,
-            pitch: 0.0,
+            rate: 0,
+            pitch: 0,
             binary_context_slice_match: |vec| match vec
                 .windows(PATH_AUDIO.len())
                 .position(|window| window == PATH_AUDIO)
@@ -68,7 +68,7 @@ impl EdgeTTSConfig {
     }
     pub(crate) fn to_ssml(&self, content: String) -> String {
         format!(
-            r#"<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US"><voice name="{}"><prosody rate="{}" pitch="{}">{}</prosody ></voice > </speak >"#,
+            r#"<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US"><voice name="{}"><prosody rate="{}%" pitch="{}%">{}</prosody ></voice > </speak >"#,
             self.voice_name, self.rate, self.pitch, content
         )
     }

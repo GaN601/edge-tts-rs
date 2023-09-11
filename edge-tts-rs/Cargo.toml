@@ -2,10 +2,12 @@
 name = "edge-tts-rs"
 version = "0.1.0"
 edition = "2021"
-
+license = "MIT"
+repository ="https://github.com/GaN601/edge-tts-rs"
+description =""
+readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 websocket = "0.26.5"
 uuid = { version = "1.4.1", features = ["v4","fast-rng","macro-diagnostics"] }
-regex = "1.7.0"
