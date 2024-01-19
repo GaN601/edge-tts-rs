@@ -1,6 +1,6 @@
 [package]
 name = "edge-tts-rs"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 license = "MIT"
 repository ="https://github.com/GaN601/edge-tts-rs"
@@ -11,3 +11,4 @@ readme = "README.md"
 [dependencies]
 websocket = "0.26.5"
 uuid = { version = "1.4.1", features = ["v4","fast-rng","macro-diagnostics"] }
+log = "^0.4"

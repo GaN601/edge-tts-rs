@@ -1,9 +1,13 @@
+use crate::reg_log::reg_log;
 use edge_tts_rs::edge_api::{EdgeTTS, EdgeTTSConfig, TTS};
 use std::error::Error;
 use std::fs;
 
+mod reg_log;
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    reg_log()?;
+
     let tts = EdgeTTS::new(EdgeTTSConfig::default());
     let mut client = tts.connect()?;
     let vec = tts.send_ssml(&mut client,

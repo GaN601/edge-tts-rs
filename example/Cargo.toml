@@ -9,6 +9,10 @@ publish = false
 [dependencies]
 tokio = { version = "1.21.2" ,features = ["full"]}
 edge-tts-rs = {path = "../edge-tts-rs"}
+tracing = "0.1.40"
+tracing-subscriber = "0.3.18"
+tracing-log = "0.2.0"
+chrono = "0.4.31"
 [[example]]
 name = "hello_world"
 path = "hello_world.rs"

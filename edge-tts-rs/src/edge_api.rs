@@ -7,6 +7,7 @@ use websocket::OwnedMessage::Text;
 use websocket::{Message, OwnedMessage};
 
 use crate::util::{gen_request_id, now_millis};
+use log::trace;
 use websocket::stream::sync::NetworkStream;
 use websocket::sync::Client;
 use websocket::url::Url;
@@ -71,7 +72,7 @@ impl EdgeTTSConfig {
             "X-Timestamp:{}\r\nContent-Type:application/json; charset=utf-8\r\nPath:speech.config\r\n\r\n{}",
             now_millis(), json
         );
-        println!("speech config {}", string);
+        trace!("speech config {}", string);
         string
     }
     pub(crate) fn to_ssml(&self, content: String) -> String {
@@ -155,7 +156,7 @@ impl EdgeTTS {
         client: &mut TTSSocket,
         ssml: String,
     ) -> Result<Vec<u8>, Box<dyn Error>> {
-        println!("ssml prepared: {}", ssml);
+        trace!("ssml prepared: {}", ssml);
 
         let message = Message::text(format!("X-Timestamp:{}\r\nX-RequestId:{}\r\nContent-Type:application/ssml+xml\r\nPath:ssml\r\n\r\n{}",now_millis(),gen_request_id(),ssml));
         client.send_message(&message)?;
@@ -166,7 +167,7 @@ impl EdgeTTS {
             let resp = client.recv_message()?;
             match resp {
                 Text(resp) => {
-                    println!("{}", resp);
+                    trace!("{}", resp);
                     // todo receive example:
                     // keynote: turn.start 1. Text("X-RequestId:ef0e87998a3d4115a0be2e637f5aaed8\r\nContent-Type:application/json; charset=utf-8\r\nPath:turn.start\r\n\r\n{\n  \"context\": {\n    \"serviceTag\": \"57be03b6dae64e2ab82972e81f796ba0\"\n  }\n}")
                     // 2. Text("X-RequestId:ef0e87998a3d4115a0be2e637f5aaed8\r\nContent-Type:application/json; charset=utf-8\r\nPath:response\r\n\r\n{\"context\":{\"serviceTag\":\"57be03b6dae64e2ab82972e81f796ba0\"},\"audio\":{\"type\":\"inline\",\"streamId\":\"0B38A07F8AE1437AB16D46C71CF3ECBB\"}}")
@@ -179,7 +180,7 @@ impl EdgeTTS {
                     }
                 }
                 OwnedMessage::Binary(resp) => {
-                    println!("{:?}", resp);
+                    trace!("{:?}", resp);
                     if flag {
                         let x = (self.config.binary_context_slice_match)(&resp);
                         let mut resp = resp[x..].to_vec();
@@ -187,7 +188,7 @@ impl EdgeTTS {
                     }
                 }
                 OwnedMessage::Close(resp) => {
-                    println!("{:?}", resp);
+                    trace!("{:?}", resp);
                     return match resp {
                         None => Err("the socket closed".to_string().into()),
                         Some(reason) => Err(reason.reason.into()),
